@@ -9,13 +9,21 @@ cache:
   directories:
     - $HOME/.ivy2/cache
     - $HOME/.sbt/boot
+    - $HOME/google-cloud-sdk/
 
 install:
   - pip install --user codecov
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION clean coverage test &&
-    sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov
+  - sbt ++$TRAVIS_SCALA_VERSION clean coverage test && sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+before_install:
+  - if [ ! -d ${HOME}/google-cloud-sdk ]; then
+       curl https://sdk.cloud.google.com | bash;
+    fi
+  - openssl aes-256-cbc -K $encrypted_ba8420eccdd1_key -iv $encrypted_ba8420eccdd1_iv -in credentials.tar.gz.enc -out credentials.tar.gz -d
+  - tar -xzf credentials.tar.gz
+  - gcloud auth activate-service-account --key-file client-secret.json
