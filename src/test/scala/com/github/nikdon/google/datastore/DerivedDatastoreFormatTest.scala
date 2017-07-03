@@ -21,10 +21,10 @@ import org.scalatest.{FlatSpec, Matchers}
 import com.google.cloud.datastore._
 import org.scalacheck.Shapeless._
 
-sealed trait Bla extends Product with Serializable
+sealed trait Bla                                                             extends Product with Serializable
 final case class Foo(bool: Boolean, str: String, long: Long, double: Double) extends Bla
-final case class Bar(int: Int, float: Float, byte: Byte) extends Bla
-final case class Baz(foo: Foo, Bar: Bar) extends Bla
+final case class Bar(int: Int, float: Float, byte: Byte)                     extends Bla
+final case class Baz(foo: Foo, Bar: Bar)                                     extends Bla
 
 class DerivedDatastoreFormatTest
     extends FlatSpec
