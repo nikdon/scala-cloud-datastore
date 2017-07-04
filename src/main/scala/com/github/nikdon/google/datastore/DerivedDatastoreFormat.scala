@@ -39,10 +39,8 @@ trait DerivedDatastoreFormat {
       def read(av: Entity) = Validated.valid(HNil)
       def write(t: HNil, kind: Option[String])(implicit datastore: Datastore): Entity = {
         val knd = kind.getOrElse(BaseDatatypes.HLIST)
-        val k   = datastore.newKeyFactory().setKind(knd).newKey(BaseDatatypes.HLIST)
-        Entity.newBuilder(k).build()
-        //        val k = datastore.newKeyFactory().setKind(knd).newKey()
-        //        Entity.newBuilder(datastore.allocateId(k)).build()
+        val k = datastore.newKeyFactory().setKind(knd).newKey()
+        Entity.newBuilder(datastore.allocateId(k)).build()
       }
     }
 
@@ -131,12 +129,9 @@ trait DerivedDatastoreFormat {
         field match {
           case Inl(h) =>
             val knd = kind.getOrElse(BaseDatatypes.HLIST)
-            val key =
-              datastore.newKeyFactory().setKind(knd).newKey(BaseDatatypes.HLIST)
-            Entity
-              .newBuilder(key)
-              .set(fieldWitness.value.name, headFormat.value.write(h))
-              .build()
+            val k = datastore.newKeyFactory().setKind(knd).newKey()
+            Entity.newBuilder(datastore.allocateId(k)).set(fieldWitness.value.name, headFormat.value.write(h)).build()
+
           case Inr(t) => tailFormat.write(t, kind)
         }
     }
